@@ -83,6 +83,8 @@ def locate_and_click(template_path, area_top_left, area_bottom_right, click_pos,
         while not stop_flag:
             if not pause_flag:
                 object_detected_flag = True
+                # print("Object detection started")  # Debugging statement
+                
                 # Capture the specified area of the screen
                 region = {
                     "top": int(area_top_left[1]),
@@ -103,6 +105,8 @@ def locate_and_click(template_path, area_top_left, area_bottom_right, click_pos,
 
                 if des_screenshot is None:
                     print("Warning: No descriptors found in the screenshot.")
+                    object_detected_flag = False
+                    time.sleep(0.5)  # Small delay to allow keep_awake to run
                     continue
 
                 # Use FLANN-based matcher to find matches
@@ -149,12 +153,12 @@ def locate_and_click(template_path, area_top_left, area_bottom_right, click_pos,
                         
                         # Move the cursor back to the saved click position
                         pyautogui.moveTo(click_pos)
-                #     else:
-                #         print("Warning: Homography could not be computed.")
-                # else:
-                #     print("Not enough matches found.")
-                time.sleep(1)  # Check for the object every 1.5 seconds
+                
+                # print("Object detection ended")  # Debugging statement
                 object_detected_flag = False
+                time.sleep(0.5)  # Small delay to allow keep_awake to run
+            else:
+                time.sleep(0.5)  # Small delay to allow keep_awake to run
 
 def check_for_stop_pause():
     """Check for the stop, pause, and toggle continuous clicking key presses."""
@@ -182,16 +186,16 @@ def check_for_stop_pause():
 def keep_awake(stats_pos, click_pos):
     """Click at the top-left coordinates every minute to keep the computer awake and return to the saved position."""
     global stop_flag, pause_flag, object_detected_flag
+    # print("keep_awake() thread started")
+    next_keep_awake_time = time.time() + 60  # Schedule the first keep awake click in 60 seconds
     while not stop_flag:
-        if not pause_flag and not object_detected_flag:
-            # Debugging output
-            # print(f"Keep awake click at ({top_left[0]}, {top_left[1]})")
+        if not pause_flag and not object_detected_flag and time.time() >= next_keep_awake_time:
+            # print("Keeping computer awake...")
     
             # Save the current cursor position
             current_pos = pyautogui.position()
             
-            # Click at the top-left corner
-            # pyautogui.click(top_left[0] + 10, top_left[1] + 10)
+            # Click at the stats position
             pyautogui.click(stats_pos[0], stats_pos[1])
             debug_out = pyautogui.position()
             # print(f"Keep Awake Click: {debug_out}")
@@ -199,7 +203,9 @@ def keep_awake(stats_pos, click_pos):
             # Move back to the saved click position
             pyautogui.moveTo(click_pos[0], click_pos[1])
             
-            time.sleep(60)
+            next_keep_awake_time = time.time() + 60  # Schedule the next keep awake click in 60 seconds
+        
+        time.sleep(1)  # Check every second
 
 def update_console(start_time):
     """Update the console with the click count and runtime every second."""
@@ -211,8 +217,8 @@ def update_console(start_time):
 
 def main():
     global stop_flag
-    template_path = 'object.png'  # Path to the image of the object to detect
-    min_match_count = 15  # Increased minimum number of matches required to consider the object detected
+    template_path = 'object4.png'  # Path to the image of the object to detect
+    min_match_count = 10  # Increased minimum number of matches required to consider the object detected
 
     # Get the area coordinates for object detection from the user
     area_top_left, area_bottom_right = get_area_coordinates()
