@@ -40,7 +40,7 @@ Ensure your project directory contains the following files:
 2. **Run the script**:
 
    ```sh
-   python clicker.py
+   python opti.py
    ```
 
 ### Script Flow
