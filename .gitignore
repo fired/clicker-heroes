@@ -1,0 +1,15 @@
+# Ignore specific files
+clicker.py
+gray_screenshot.png
+idle.py
+matches.png
+matches_*.png
+mouse_pos.py
+opti copy.py
+Orangefish.webp
+screenshot.png
+shut.py
+window.png
+
+# Ignore the matches directory and its contents
+matches/
