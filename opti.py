@@ -114,7 +114,7 @@ def locate_and_click(template_path, area_top_left, area_bottom_right, click_pos,
                 # Store all good matches using the Lowe's ratio test
                 good_matches = []
                 for m, n in matches:
-                    if m.distance < 0.7 * n.distance:
+                    if m.distance < 0.6 * n.distance:
                         good_matches.append(m)
 
                 # If enough matches are found, click the center of the detected object
@@ -211,8 +211,8 @@ def update_console(start_time):
 
 def main():
     global stop_flag
-    template_path = 'object4.png'  # Path to the image of the object to detect
-    min_match_count = 10  # Minimum number of matches required to consider the object detected
+    template_path = 'object.png'  # Path to the image of the object to detect
+    min_match_count = 15  # Increased minimum number of matches required to consider the object detected
 
     # Get the area coordinates for object detection from the user
     area_top_left, area_bottom_right = get_area_coordinates()
